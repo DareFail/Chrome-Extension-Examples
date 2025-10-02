@@ -328,8 +328,8 @@ async function startMonitoring(tabId) {
     stopMonitoring(tabId); // ensure no duplicate timers
     async function reloadAndScrape() {
         try {
-            await chrome.tabs.update(tabId);
-            await new Promise(res => setTimeout(res, 5000));
+            await chrome.tabs.reload(tabId);
+            await new Promise(res => setTimeout(res, 10000));
             await chrome.scripting.executeScript({
                 target: { tabId },
                 func: scrapeAndPost,
@@ -339,11 +339,11 @@ async function startMonitoring(tabId) {
             console.log("Monitor error:", e);
         }
         if (monitoring[tabId]?.active) {
-            monitoring[tabId].timer = setTimeout(reloadAndScrape, randomDelay(20, 30));
+            monitoring[tabId].timer = setTimeout(reloadAndScrape, randomDelay(45, 60));
         }
     }
-    monitoring[tabId] = { url, active: true };
-    monitoring[tabId].timer = setTimeout(reloadAndScrape, 1000);
+    monitoring[tabId] = { active: true };
+    monitoring[tabId].timer = setTimeout(reloadAndScrape, 5000);
 }
 
 function stopMonitoring(tabId) {
